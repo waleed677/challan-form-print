@@ -1,47 +1,187 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { ref } from 'vue'
+import ChallanPrint from './components/ChallanPrint.vue'
+
+const rollNo = ref('')
+const name = ref('')
+const fatherName = ref('')
+const program = ref('')
+const showPrintView = ref(false)
+
+const programFees = [
+  {
+    id: 'ssc',
+    name: 'SSC',
+    fee: 5000,
+    duration: '2 Years',
+    description: 'Secondary School Certificate',
+  },
+  {
+    id: 'hssc',
+    name: 'HSSC',
+    fee: 8000,
+    duration: '2 Years',
+    description: 'Higher Secondary School Certificate',
+  },
+  {
+    id: 'bachelors',
+    name: 'Bachelors',
+    fee: 15000,
+    duration: '4 Years',
+    description: "Bachelor's Degree Program",
+  },
+  {
+    id: 'postgraduate',
+    name: 'POST GRADUATE',
+    fee: 20000,
+    duration: '2 Years',
+    description: 'Post Graduate Program',
+  },
+]
+
+const generateChallanNo = () => {
+  return '251712642924' // Dummy challan number for now
+}
+
+const printChallan = () => {
+  showPrintView.value = true
+  // Use setTimeout to ensure the print dialog opens after the view is rendered
+  setTimeout(() => {
+    window.print()
+  }, 100)
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div v-if="!showPrintView" class="min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-3xl mx-auto">
+      <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Header Section -->
+        <div class="bg-blue-600 px-6 py-8">
+          <h1 class="text-4xl font-bold text-white text-center tracking-wide">
+            ONLINE CHALLAN FORM
+          </h1>
+        </div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+        <!-- Form Section -->
+        <div class="px-8 py-10">
+          <form @submit.prevent="printChallan" class="space-y-8">
+            <div class="grid grid-cols-1 gap-8">
+              <!-- Roll No Field -->
+              <div class="flex flex-col gap-2">
+                <label for="rollNo" class="text-base font-bold">Roll No</label>
+                <input
+                  type="text"
+                  id="rollNo"
+                  v-model="rollNo"
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="Enter your roll number"
+                  required
+                />
+              </div>
+
+              <!-- Name Field -->
+              <div class="flex flex-col gap-2">
+                <label for="name" class="text-base font-bold">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  v-model="name"
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+
+              <!-- Father Name Field -->
+              <div class="flex flex-col gap-2">
+                <label for="fatherName" class="text-base font-bold">Father Name</label>
+                <input
+                  type="text"
+                  id="fatherName"
+                  v-model="fatherName"
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                  placeholder="Enter your father's name"
+                  required
+                />
+              </div>
+
+              <!-- Program Selection -->
+              <div class="flex flex-col gap-2">
+                <label for="program" class="text-base font-bold">Select Program</label>
+                <select
+                  id="program"
+                  v-model="program"
+                  class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white"
+                  required
+                >
+                  <option value="" disabled>Select a program</option>
+                  <option v-for="prog in programFees" :key="prog.id" :value="prog.id">
+                    {{ prog.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-6">
+              <button
+                type="submit"
+                class="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-semibold text-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 shadow-lg hover:shadow-xl"
+              >
+                Print Challan
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-  </header>
+  </div>
 
-  <main>
-    <TheWelcome />
-  </main>
+  <!-- Print View -->
+  <div v-else>
+    <ChallanPrint
+      :student-name="name"
+      :father-name="fatherName"
+      :roll-no="rollNo"
+      :program="program"
+      :challan-no="generateChallanNo()"
+    />
+    <div class="no-print text-center mt-4">
+      <button
+        @click="showPrintView = false"
+        class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+      >
+        Back to Form
+      </button>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+/* Override any conflicting styles */
+.flex {
+  display: flex;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.flex-col {
+  flex-direction: column;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.gap-2 {
+  gap: 0.5rem;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+/* Additional label styles */
+label {
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  color: #1f2937 !important;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+@media print {
+  .no-print {
+    display: none;
   }
 }
 </style>
