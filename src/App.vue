@@ -54,7 +54,7 @@ const printChallan = () => {
 
 <template>
   <div v-if="!showPrintView" class="min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-3xl mx-auto">
+    <div class="mx-auto">
       <div class="bg-white rounded-xl shadow-lg overflow-hidden">
         <!-- Header Section -->
         <div class="bg-blue-600 px-6 py-8">
